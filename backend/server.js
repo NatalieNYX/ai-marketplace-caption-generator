@@ -1,3 +1,4 @@
+// server.js -> preprocessor that receives raw incoming HTTP requests, processes them, and sends back responses. 
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
