@@ -1,6 +1,7 @@
 import os 
 import sys 
 import base64
+import json
 from pathlib import Path
 from dotenv import load_dotenv
 from google import genai
@@ -109,23 +110,42 @@ Instructions:
     
 # when watch_agent.py is run directly, this block will execute
 if __name__ == "__main__":
-    #check if the arguments passed in the command line are less than 4 (script name, image path, model name, condition, extras)
-    if len(sys.argv) < 4:
-        print(
-            "Usage: python watch_agent.py"
-            "<image_path> <model_name> <conditon> [extras]",
-            file = sys.stderr,
-        )
-        sys.exit(1) # exit with error code 1 if not enough arguments
+    # #test if the arguments passed in the command line are less than 4 (script name, image path, model name, condition, extras)
+    # if len(sys.argv) < 4:
+    #     print(
+    #         "Usage: python watch_agent.py"
+    #         "<image_path> <model_name> <conditon> [extras]",
+    #         file = sys.stderr,
+    #     )
+    #     sys.exit(1) # exit with error code 1 if not enough arguments
     
-    image_path = sys.argv[1]
-    model_name = sys.argv[2]
-    condition = sys.argv[3]
-    extras = sys.argv[4] if len(sys.argv) > 4 else ""
+    # image_path = sys.argv[1]
+    # model_name = sys.argv[2]
+    # condition = sys.argv[3]
+    # extras = sys.argv[4] if len(sys.argv) > 4 else ""
 
+    # agent = WatchCaptionAgent()
+    # caption = agent.generate_caption(image_path, model_name, condition, extras)
+    # print (caption)
+    #==========================================================================
+
+    # Read everything Node.js sends through stdin 
+    raw = sys.stdin.read()
+    # Pase the JSOn string into a Python dictionary 
+    data = json.loads(raw)
+    # Pull out each field from the dictionary
+    image_path = data["image_path"]
+    model_name = data["model_name"]
+    condition = data["condition"]
+    extras = data.get("extras", "")  # Use .get() if there is possibility of missing values
+
+    # Create agent and generate caption
     agent = WatchCaptionAgent()
     caption = agent.generate_caption(image_path, model_name, condition, extras)
-    print (caption)
+    # Print results as JSON to stdout -> Node.js will read this 
+    # This must only print in the script 
+    print(json.dumps({"caption": caption}))
+
 
 
         
