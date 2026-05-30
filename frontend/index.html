@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Watch Caption AI</title>
+        <link rel="stylesheet" href="styles.css" />
+    </head>
+        
+    <body>
+        <!-- Chat Shell -->
+        <div class="chat-shell">
+            <!-- Chat Header (Top Bar)-->
+            <header class = "chat-header">
+                <div class = "header-avatar">
+
+                </div>
+                <div class = "header-info">
+                    <h1>List It</h1>
+                    <span class = "header-status">Powered by Gemeni AI</span>
+                </div>
+            </header>
+
+            <!-- Message Window (Scrollable Area with chat bubbles)-->
+            <main class = "message-window" id = "message-window">
+                <!-- Bot Message: Initial Welcome -->
+                <div class = "msg bot" data-step = "0">
+                    <div class = "bubble">
+                        👋 Hey! I'll help you write a <strong>ready-to-post</strong>
+                        listing for Carousell or Facebook Marketplace.<br /><br />
+                        Let's start — upload a <strong>photo of your watch</strong>.
+                    </div>
+                </div>
+
+                <!--Bot Message: Upload Image Input-->
+                <div class = "msg bot" data-step = "0">
+                    <div class = "upload-card" id = "upload-card">
+                        <!-- Hidden real file input trigger when card is clicked -->
+                        <input type = "file" id = "photo-input" accept = "image/*" style = "display: none" />
+                        <div class = "upload-icon"> 📷 </div>
+                        <p class = "upload-label">Click to upload a photo</p>
+                        <span class = "upload-hint">JPG or PNG, max 5 MB</span>
+                    </div>
+                </div>
+
+                <!-- User Message: Uploaded Photo Preview-->
+                <!-- Hidden by default, JS reveal this after photo is uploaded-->
+                <div class = "msg user hidden" id = "msg-photo">
+                    <div class = "bubble photo-bubble">
+                        <!-- JS will inject an <img> here once user upload file-->
+                        <span id = "photo-filename"></span>
+                    </div>
+                </div>
+
+                <!--Bot Message: Model Name Input-->
+                <!-- Hidden by default, JS reveal this after photo is uploaded-->
+                <div class = "msg bot hidden" id = "msg-ask-model">
+                    <div class = "bubble">
+                         Nice! Now type the <strong>watch model name</strong>.<br />
+                         <span class = "hint-text"> e.g. "Casio AE1200", "Seiko SKX007"</span>
+                    </div>
+                </div>
+
+                <!-- User Message: Model Name Displayed-->
+                <!--Hidden, JS fills in the text and reveals this bubble-->
+                <div class = "msg user hidden" id = "msg-model">
+                    <div class = "bubble" id = "bubble-model"></div>
+                </div>
+
+                <!--Bot Message: Condition Input-->
+                <!-- Hidden by default, Has clickable option buttons inside bubble-->
+                <div class = "msg bot hidden" id = "msg-ask-condition">
+                    <div class = "bubble">
+                        Got it! What's the <strong>condition</strong> of the watch?
+                        <!-- Condition Buttons (JS attaches click handlers to these)-->
+                            <div class = "option-row" id = "condition-options">
+                            <button class = "option-btn" data-value = "Brand New>">Brand New</button>
+                            <button class = "option-btn" data-value = "Like New">Like New</button>
+                            <button class = "option-btn" data-value = "Good">Good</button>
+                            <button class = "option-btn" data-value = "Fair">Fair</button>
+                            <button class = "option-btn" data-value = "Poor">Poor</button>
+                            </div>
+                    </div>
+                </div>
+
+                <!-- User Message : Condition Displayed-->
+                <div class = "msg user hidden" id = "msg-condition">
+                    <div class = "bubble" id = "bubble-condition"></div>
+                </div>
+
+                <!--Bot Message: Additional Details Input-->
+                <!-- Hidden by default, This step is optional, will add skip button-->
+                <div class = "msg bot hidden" id = "msg-ask-details">
+                    <div class ="bubble">
+                        Almost there! Any <strong>additional details</strong>?
+                        <span class="optional-tag">optional</span><br />
+                        <span class="hint-text">
+                            e.g. full set with box &amp; papers, aftermarket strap,
+                            service history, reason for selling…
+                        </span>
+                    </div>
+                </div>
+
+                <!-- User Message: Additional Details Displayed-->
+                <div class = "msg user hidden" id= "msg-extras">
+                    <div class = "bubble" id = "bubble-extras"></div>
+                </div>
+
+                <!--Bot Message: Loading Indicator-->
+                <!-- Hidden by default, JS reveals this while waiting for AI response-->
+                <div class = "msg bot hidden" id="msg-loading">
+                    <div class = "bubble loading-bubble">
+                        <span class = "dot"></span>
+                        <span class = "dot"></span>
+                        <span class = "dot"></span>
+                    </div>
+                </div>
+
+                <!--Bot Message: Generated Caption-->
+                <div class = "msg bot hidden" id = "msg-caption">
+                    <div class = "bubble caption-bubble" id = "bubble-caption">
+                        <div class = "caption-label">✅ Your listing caption is ready!</div>
+                        <!-- JS injects the caption text here-->
+                        <pre id = "caption-text"></pre>
+                        <!-- Action buttons below the captions-->
+                         <div class = "caption-action">
+                            <button class = "action-btn" id = "btn-copy">📋 Copy</button>
+                            <button class = "action-btn" id = "btn-restart">➕ New Listing</button>
+                         </div>
+                    </div>
+                </div>
+
+
+                <!-- Bot Message: Error Fallback-->
+                <div class = "msg bot hidden" id = "msg-error">
+                    <div class = "bubble error-bubble">
+                        ⚠️ Something went wrong. Please try again.
+                          <br />
+                        <button class="action-btn" id="btn-retry">Retry</button>
+                    </div>
+                </div>
+            </main>
+
+            <!--End of message-window-->
+            <!-- Input Bar (bottom bar, always visible but JS enable/disable depending on step)-->
+            <footer class = "input-bar">
+                <input 
+                    type = "text"
+                    id = "text-input"
+                    class = "text-input"
+                    placeholder ="Type here..."
+                    autocomplete="off"
+                />
+                <button class = "send-btn" id = "send-btn" aria-label="Send message">➤</button>
+            </footer>
+        </div>
+
+        <!-- end of chat shell-->
+
+        <script src="app.js"></script>
+    </body>
+
+</html>

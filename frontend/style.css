@@ -1,0 +1,56 @@
+/* Variables and Reset */
+/* CSS Variables live on :root so they can be accessed globally */
+:root{
+  --color-primary: #4A3F8F;  
+  --color-primary-light: #EEEDFE;
+  --color-primary-mid:  #7B72CC;
+
+  --color-user-bubble: #4A3F8F;
+  --color-bot-bubble: #FFFFFF;
+  --color-page-bg: #F0F0F5;
+
+  --color-text-dark: #1A1A2E;
+  --color-text-body: #3D3D5C;
+  --color-text-muted: #8888AA;
+
+  --color-border: #DDDDEF;
+  --color-error:  #C0392B;
+
+  --font-main: 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif';
+
+  --radius-bubble: 18px;
+  --radius-card: 14px;
+  --radius-btn: 24px;
+
+  --shadow-card: 0 2px 12px rgba(74, 63, 143, 0.10);
+  --shadow-bubble: 0 1px 4px rgba(0, 0, 0, 0.07);
+  --max-chat-width: 520px;
+
+}
+
+/* Box-sizing to make width/height calculation predictable */
+/* Without this, padding adds to the element's total width and height */
+*, *::before, *::after{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; 
+}
+
+body{
+  font-family: var(--font-main);
+  font-size: 15px;
+  background-color: var(--color-page-bg);
+  color: var(--color-text-body);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* A subtle diagonal line texture for the page background */
+   background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 24px,
+    rgba(74, 63, 143, 0.03) 24px,
+    rgba(74, 63, 143, 0.03) 25px
+  );
+}
