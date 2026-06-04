@@ -54,3 +54,149 @@ body{
     rgba(74, 63, 143, 0.03) 25px
   );
 }
+
+/* Page and Shell Layout */
+/* chat-shell is the outer white card that contains the entire chat interface */
+/* Use flex column so header, chat area, and input stack vertically */
+.chat-shell{
+  width: 100%;
+  max-width: var(--max-chat-width);
+  height: 100vh;
+  max-height: 780px;
+
+  display: flex;
+  flex-direction: column; /* stack children from top to bottom */
+
+  background: var(--color-bot-bubble);
+  border-radius: var(--radius-card);
+  box-shadow: 0 80px 40px rgba(74, 63, 143, 0.15);
+  overflow  : hidden;
+}
+
+/* Header */
+.chat-header{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--color-primary);
+  color: white;
+
+  /*prevent header from shirnking when messages fill the chat area*/
+  flex-shrink: 0;
+}
+
+.header-avatar{
+  font-size:26px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-info h1{
+  font-size: 16px;
+  font-weight: 600;
+  color:white;
+  letter-spacing: 0.01em;
+}
+
+.header-status{
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* Message Window */
+/* This div has all the chat messages 
+/* Use flex column to stack messages, flex: 1 chat bubble takes up all the remaining sapce ebtween the header and the input bar */
+/* overflow-y: auto adds a scrollbar only when content overflows. */
+.message-window{
+  flex:1;
+  overflow-y:auto;
+  padding: 18px 14px;
+
+  display:flex;
+  flex-direction: column;
+  gap: 6px; /*space between rows */
+
+  background: var(--color-page-bg);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 24px,
+    rgba(74, 63, 143, 0.03) 24px,
+    rgba(74, 63, 143, 0.03) 25px
+  );
+
+  scroll-behavior: smooth; /*smooth scroll when new messages are added */
+
+}
+
+/* Thin, subtle scrollbar for webkit browsers */
+.message-window::-webkit-scrollbar {
+  width: 4px;
+}
+.message-window::-webkit-scrollbar-thumb{
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+/* Message rows */
+/* Msg is the row wrapper, use flex to controll left/right */
+/* alignment. bot messages go left, user messages on right */
+.msg{
+  display: flex;
+  max-width: 82%;
+}
+
+.msg.bot{
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.msg.user{
+  align-self: flex-end;
+  flex-direction:column;
+  align-items: flex-end;
+}
+
+.msg-time{
+  font-size:11px;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+/* Fade + Slide up animation for new messages appearing */
+@keyframes fadeSlideIn{
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bubble Styles */
+.bubble{
+  padding: 11px 15px;
+  border-radius: var(--radius-bubble);
+  line-height: 1.55;
+  font-size: 14.5px;
+  box-shadow: var(--shadow-bubble) ;
+}
+
+
+
+
+
+
+
