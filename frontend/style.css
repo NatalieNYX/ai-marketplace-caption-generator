@@ -1,0 +1,508 @@
+/* Variables and Reset */
+/* CSS Variables live on :root so they can be accessed globally */
+:root{
+  --color-primary: #4A3F8F;  
+  --color-primary-light: #EEEDFE;
+  --color-primary-mid:  #7B72CC;
+
+  --color-user-bubble: #4A3F8F;
+  --color-bot-bubble: #FFFFFF;
+  --color-page-bg: #F0F0F5;
+
+  --color-text-dark: #1A1A2E;
+  --color-text-body: #3D3D5C;
+  --color-text-muted: #8888AA;
+
+  --color-border: #DDDDEF;
+  --color-error:  #C0392B;
+
+  --font-main: 'Segoe UI', 'Helvetica Neue', 'Arial', 'sans-serif';
+
+  --radius-bubble: 18px;
+  --radius-card: 14px;
+  --radius-btn: 24px;
+
+  --shadow-card: 0 2px 12px rgba(74, 63, 143, 0.10);
+  --shadow-bubble: 0 1px 4px rgba(0, 0, 0, 0.07);
+  --max-chat-width: 520px;
+
+}
+
+/* Box-sizing to make width/height calculation predictable */
+/* Without this, padding adds to the element's total width and height */
+*, *::before, *::after{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0; 
+}
+
+body{
+  font-family: var(--font-main);
+  font-size: 15px;
+  background-color: var(--color-page-bg);
+  color: var(--color-text-body);
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* A subtle diagonal line texture for the page background */
+   background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 24px,
+    rgba(74, 63, 143, 0.03) 24px,
+    rgba(74, 63, 143, 0.03) 25px
+  );
+}
+
+/* Page and Shell Layout */
+/* chat-shell is the outer white card that contains the entire chat interface */
+/* Use flex column so header, chat area, and input stack vertically */
+.chat-shell{
+  width: 100%;
+  max-width: var(--max-chat-width);
+  height: 100vh;
+  max-height: 780px;
+
+  display: flex;
+  flex-direction: column; /* stack children from top to bottom */
+
+  background: var(--color-bot-bubble);
+  border-radius: var(--radius-card);
+  box-shadow: 0 80px 40px rgba(74, 63, 143, 0.15);
+  overflow  : hidden;
+}
+
+/* Header */
+.chat-header{
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: var(--color-primary);
+  color: white;
+
+  /*prevent header from shirnking when messages fill the chat area*/
+  flex-shrink: 0;
+}
+
+.header-avatar{
+  font-size:26px;
+  width: 44px;
+  height: 44px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.header-info h1{
+  font-size: 16px;
+  font-weight: 600;
+  color:white;
+  letter-spacing: 0.01em;
+}
+
+.header-status{
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.75);
+}
+
+
+/* Message Window */
+/* This div has all the chat messages 
+/* Use flex column to stack messages, flex: 1 chat bubble takes up all the remaining sapce ebtween the header and the input bar */
+/* overflow-y: auto adds a scrollbar only when content overflows. */
+.message-window{
+  flex:1;
+  overflow-y:auto;
+  padding: 18px 14px;
+
+  display:flex;
+  flex-direction: column;
+  gap: 6px; /*space between rows */
+
+  background: var(--color-page-bg);
+  background-image: repeating-linear-gradient(
+    135deg,
+    transparent,
+    transparent 24px,
+    rgba(74, 63, 143, 0.03) 24px,
+    rgba(74, 63, 143, 0.03) 25px
+  );
+
+  scroll-behavior: smooth; /*smooth scroll when new messages are added */
+
+}
+
+/* Thin, subtle scrollbar for webkit browsers */
+.message-window::-webkit-scrollbar {
+  width: 4px;
+}
+.message-window::-webkit-scrollbar-thumb{
+  background: var(--color-border);
+  border-radius: 4px;
+}
+
+/* Message rows */
+/* Msg is the row wrapper, use flex to controll left/right */
+/* alignment. bot messages go left, user messages on right */
+.msg{
+  display: flex;
+  max-width: 82%;
+}
+
+.msg.bot{
+  justify-content: flex-start;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.msg.user{
+  align-self: flex-end;
+  flex-direction:column;
+  align-items: flex-end;
+}
+
+.msg-time{
+  font-size:11px;
+  color: var(--color-text-muted);
+  margin-top: 3px;
+  padding: 0 4px;
+}
+
+/* Fade + Slide up animation for new messages appearing */
+@keyframes fadeSlideIn{
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to{
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Bubble Styles */
+.bubble{
+  padding: 11px 15px;
+  border-radius: var(--radius-bubble);
+  line-height: 1.55;
+  font-size: 14.5px;
+  box-shadow: var(--shadow-bubble) ;
+}
+
+/* Bot bubbles on left */ 
+.msg.bot .bubble{
+  background: var(--color-bot-bubble);
+  color: var(--var-text-dark);
+  border-bottom-left-radius: 4px;
+  border: 1px solid var(--color-border);
+}
+
+/* User bubble on rights */
+.msg.user .bubble{
+  background: var(--color-user-bubble);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.hint-text{
+  display: block;
+  margin-top: 5px;
+  font-size: 12.5px;
+  color: var(--color-text-muted);
+}
+
+/* "optional" tag badge */
+.optional-tag {
+  display: inline-block;
+  font-size: 11px;
+  padding: 1px 8px;
+  background: var(--color-primary-light);
+  color: var(--color-primary);
+  border-radius: 10px;
+  margin-left: 6px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+/* Photo preview inside user bubble */
+.photo-bubble img{
+  display: block;
+  max-width: 180px;
+  max-height: 180px;
+  border-radius: 10px;
+  object-fit: cover;
+}
+
+/* filename shown below the image */
+.photo-bubble .photo-name{
+  display: block;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.8);
+  margin-top: 4px;
+}
+
+
+/* Upload Card -> clickable file-uplaod card, use flex to center content */
+.upload-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 20px 28px;
+  cursor: pointer;
+ 
+  background: white;
+  border: 2px dashed var(--color-primary-mid);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+ 
+  transition: background 0.2s, border-color 0.2s;
+  min-width: 200px;
+}
+
+.upload-card:hover{
+  background: var(--color-primary-light);
+  border-color: var(--color-primary);
+}
+
+.upload-icon{
+  font-size: 32px;
+  line-height:1;
+}
+
+.upload-label{
+  font-size: 14px;
+  font-weight: 600;
+  color:var(--color-primary);
+}
+
+.upload-hint{
+  font-size: 12px;
+  color: var(--color-text-muted);
+}
+
+.upload-card.done{
+  opacity: 0.5;
+  cursor: default;
+  pointer-events: none;
+  border-style:solid;
+}
+
+/* Condition buttons */
+.options-row{
+  display: flex; 
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.option-btn{
+  padding: 7px 16px;
+  border: 1.5px solid var(--color-primary-mid);
+  border-radius: var(--radius-btn);
+  background:white;
+  color: var(--color-primary);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+ 
+.option-btn:hover {
+  background: var(--color-primary-light);
+}
+
+/* .selected is added by JS when the user clicks a button          */
+.option-btn.selected {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+ 
+/* Once a condition is chosen, lock ALL buttons (no re-selecting)  */
+.option-btn.locked {
+  pointer-events: none;
+  opacity: 0.55;
+}
+ 
+.option-btn.selected.locked {
+  opacity: 1;           /* keep the chosen one fully visible       */
+}
+ 
+
+/* Loading Animations */
+/* Three bouncing dots shown while the API is thinking            */
+.loading-bubble {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 14px 18px;
+}
+ 
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--color-primary-mid);
+  animation: bounce 1.2s infinite ease-in-out;
+}
+ 
+/* Stagger each dot so they bounce one after the other            */
+.dot:nth-child(2) { animation-delay: 0.2s; }
+.dot:nth-child(3) { animation-delay: 0.4s; }
+ 
+@keyframes bounce {
+  0%, 80%, 100% { transform: translateY(0);    opacity: 0.4; }
+  40%           { transform: translateY(-6px); opacity: 1;   }
+}
+
+/* caption output */
+.caption-bubble {
+  max-width: 100%;
+  padding: 14px 16px;
+}
+ 
+/* Small "ready" label at the top of the caption card             */
+.caption-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-bottom: 10px;
+}
+
+/* <pre> preserves line breaks from API response exactly */
+/* white-space: pre-wrap also wraps long lines without it being long 
+/* line would overflow bubble horizontally */
+#caption-text{
+  white-space: pre-wrap;
+  font-family: var(--font-main);
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--color-text-dark);
+  background: var(--color-primary-light);
+  border-radius: 10px;
+  padding: 12px 14px;
+  border-left: 3px solid var(--color-primary);
+}
+
+/* row of action buttons below the caption */
+.caption-actions {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+ 
+.action-btn {
+  padding: 7px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  background: white;
+  color: var(--color-text-body);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+ 
+.action-btn:hover {
+  background: var(--color-primary-light);
+  border-color: var(--color-primary-mid);
+  color: var(--color-primary);
+}
+ 
+/* Error bubble                                                    */
+.error-bubble {
+  background: #FEF0EE;
+  border: 1px solid #F5C0BB;
+  color: var(--color-error);
+}
+ 
+.error-bubble .action-btn {
+  margin-top: 8px;
+  color: var(--color-error);
+  border-color: var(--color-error);
+}
+
+/* input bar at the bottom */
+.input-bar{
+  display: flex; 
+  align-items: center;
+  gap: 8px;
+  padding: 10px 14px;
+  background: white;
+  border-top: 1px solid var(--color-border);
+  
+  flex-shrink: 0; /* prevent shrinking when chat area is full of messages */
+}
+
+.text-input {
+  flex: 1;             /* take all available width                 */
+  padding: 10px 16px;
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-btn);
+  font-size: 14.5px;
+  font-family: var(--font-main);
+  color: var(--color-text-dark);
+  background: var(--color-page-bg);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.text-input:focus{
+  border-color: var(--color-primary-mid);
+  background: white;
+}
+
+/* disabled state -> JS disables input during condition selection and while API loading */
+.text-input:disabled{
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.send-btn{
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--color-primary);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.15s, transform 0.1s;
+}
+
+.send-btn:hover  { background: var(--color-primary-mid); }
+.send-btn:active { transform: scale(0.92); }
+ 
+.send-btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  transform: none;
+}
+ 
+/* Utility classes */
+/* main show/hide toggle used by JS */
+/* adding .hidden hides an elements, removing i t reveals it */
+.hidden{
+  display: none !important; /* always hides element even if other CSS rules what to display it */  
+}
+
+/* Responsive on ver small screen, fill the full viewport */
+@media (max-width: 540px){
+  .chat-shell{
+    border: 0;
+    max-height: 100vh;
+  }
+}
+
+
+

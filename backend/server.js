@@ -13,6 +13,8 @@ const PORT = 3000;
 app.use(cors());
 //express.json() -> teaches Express to read JSOn from request bodies and make it available in req.body
 app.use(express.json());
+//when a browser visits the root URL, serve the static files from the frontend folder (index.html, style.css, script.js)
+app.use(express.static('fronted'));
 
 //bridge function to connect Node.js to Python script
 // Return as a PROMISE that resolves with the parsed JSON from Python
@@ -88,6 +90,7 @@ const upload = multer({storage: storage});
 app.get('/', (req, res) => {
     res.json({status: 'Watch Caption API is running'})
 });
+
 
 //app.post()->respond to POST request (Frontend will POST form data here)
 //add async to use await inside function to wait for callPython to finish before sending response back to frontend
