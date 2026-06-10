@@ -14,7 +14,7 @@ app.use(cors());
 //express.json() -> teaches Express to read JSOn from request bodies and make it available in req.body
 app.use(express.json());
 //when a browser visits the root URL, serve the static files from the frontend folder (index.html, style.css, script.js)
-app.use(express.static('fronted'));
+app.use(express.static('frontend'));
 
 //bridge function to connect Node.js to Python script
 // Return as a PROMISE that resolves with the parsed JSON from Python
